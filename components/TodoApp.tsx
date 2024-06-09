@@ -1,15 +1,17 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import TodoList from "./TodoList";
 import { useTodoList } from "../hooks/useTodoList";
+import TodoStatusBar from "./TodoStatusBar";
 
 const TodoApp = () => {
-  const { todoList, title, setTitle, handleSubmit, handleDelete } =
+  const [isDone, setIsDone] = useState(false);
+  const { todoList, title, setTitle, handleSubmit, handleDelete, handleDone } =
     useTodoList();
 
   return (
     <section className="text-center mb-2 text-2xl font-medium">
-      <h3>Supabase Todo App</h3>
+      <h1>Supabase Todo App</h1>
       <form onSubmit={(e) => handleSubmit(e)}>
         <input
           type="text"
@@ -19,7 +21,13 @@ const TodoApp = () => {
         />
         <button className="shadow-md p-1 rounded-lg bg-blue-200">Add</button>
       </form>
-      <TodoList todoList={todoList} handleDelete={handleDelete} />
+      <TodoStatusBar isDone={isDone} setIsDone={setIsDone} />
+      <TodoList
+        todoList={todoList}
+        handleDelete={handleDelete}
+        handleDone={handleDone}
+        isDone={isDone}
+      />
     </section>
   );
 };

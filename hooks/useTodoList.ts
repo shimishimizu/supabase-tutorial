@@ -41,6 +41,19 @@ export const useTodoList = () => {
           );
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "todo" },
+        (payload) => {
+          setTodoList((todoList) =>
+            todoList.map((todo) =>
+              todo.id === payload.new.id
+                ? { isCompleted: payload.new.isCompleted }
+                : todo
+            )
+          );
+        }
+      )
       .subscribe();
 
     // リスナーの解除
@@ -69,5 +82,10 @@ export const useTodoList = () => {
     // }
   };
 
-  return { todoList, title, setTitle, handleSubmit, handleDelete };
+  // Todo完了フラグ
+  const handleDone = async (id: number) => {
+    await supabase.from("todo").update({ isCompleted: true }).eq("id", id);
+  };
+
+  return { todoList, title, setTitle, handleSubmit, handleDelete, handleDone };
 };
